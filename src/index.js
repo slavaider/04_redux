@@ -1,14 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+// Redux
+import {applyMiddleware, compose, createStore} from 'redux'
+import {Provider} from 'react-redux'
+import root_reducer from './redux/root_reducer'
+import thunk from 'redux-thunk';
 
+const loggerMiddleware = store => next => action => {
+    const result = next(action)
+    console.log('middleware', store.getState())
+    return result
+}
+
+const composeEnhancers = typeof window === 'object' &&
+window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+    }) : compose;
+
+const enhancer = composeEnhancers(
+    applyMiddleware(loggerMiddleware,
+        thunk),
+);
+const store = createStore(
+    root_reducer,
+    enhancer
+);
+// Dom render
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <Provider store={store}>
+            <App/>
+        </Provider>,
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

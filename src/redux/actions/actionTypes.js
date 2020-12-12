@@ -1,0 +1,5 @@
+export const add = 'add'
+export const add2 = 'add2'
+export const minus = 'minus'
+export const add_number = 'add_number'
+export const sub_number = 'sub_number'
